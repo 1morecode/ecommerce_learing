@@ -5,6 +5,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+import 'package:provider/provider.dart';
+import 'package:state_mgt/providers/product_state.dart';
 import 'package:state_mgt/view/productDetails/product_detail.dart';
 
 class ProductCard extends StatelessWidget {
@@ -14,8 +16,9 @@ class ProductCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return CupertinoButton(
+    return Consumer<ProductState>(builder: (context, value, child) => CupertinoButton(
       onPressed: () {
+        value.onIndexChange(0);
         Navigator.push(
             context,
             MaterialPageRoute(
@@ -47,58 +50,58 @@ class ProductCard extends StatelessWidget {
               ),
               Expanded(
                   child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    product['title'],
-                    style: const TextStyle(
-                        fontSize: 18, fontWeight: FontWeight.w600),
-                  ),
-                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        "\$${product['price'].toString()}",
+                        product['title'],
                         style: const TextStyle(
-                            color: Colors.black,
-                            fontSize: 16,
-                            fontWeight: FontWeight.w600),
+                            fontSize: 18, fontWeight: FontWeight.w600),
                       ),
-                      const Spacer(),
-                      Text(
-                        "Discount: ${product['discountPercentage'].toString()}%",
-                        style: const TextStyle(
-                            color: Colors.green,
-                            fontSize: 14,
-                            fontWeight: FontWeight.w500),
+                      Row(
+                        children: [
+                          Text(
+                            "\$${product['price'].toString()}",
+                            style: const TextStyle(
+                                color: Colors.black,
+                                fontSize: 16,
+                                fontWeight: FontWeight.w600),
+                          ),
+                          const Spacer(),
+                          Text(
+                            "Discount: ${product['discountPercentage'].toString()}%",
+                            style: const TextStyle(
+                                color: Colors.green,
+                                fontSize: 14,
+                                fontWeight: FontWeight.w500),
+                          ),
+                        ],
                       ),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 5),
+                        child: RatingBar.builder(
+                          initialRating: product['rating'],
+                          minRating: 1,
+                          direction: Axis.horizontal,
+                          allowHalfRating: true,
+                          itemCount: 5,
+                          itemPadding: const EdgeInsets.symmetric(horizontal: 1.0),
+                          itemBuilder: (context, _) => const Icon(
+                            Icons.star,
+                            color: Colors.amber,
+                          ),
+                          itemSize: 16,
+                          onRatingUpdate: (rating) {
+                            print(rating);
+                          },
+                        ),
+                      ),
+                      Text(product['category'].toString().toUpperCase())
                     ],
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 5),
-                    child: RatingBar.builder(
-                      initialRating: product['rating'],
-                      minRating: 1,
-                      direction: Axis.horizontal,
-                      allowHalfRating: true,
-                      itemCount: 5,
-                      itemPadding: const EdgeInsets.symmetric(horizontal: 1.0),
-                      itemBuilder: (context, _) => const Icon(
-                        Icons.star,
-                        color: Colors.amber,
-                      ),
-                      itemSize: 16,
-                      onRatingUpdate: (rating) {
-                        print(rating);
-                      },
-                    ),
-                  ),
-                  Text(product['category'].toString().toUpperCase())
-                ],
-              ))
+                  ))
             ],
           ),
         ),
       ),
-    );
+    ),);
   }
 }

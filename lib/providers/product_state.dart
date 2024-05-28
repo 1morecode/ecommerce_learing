@@ -10,7 +10,13 @@ import 'package:state_mgt/config/api.dart';
 
 class ProductState extends ChangeNotifier {
 
+  int currentSliderIndex = 0;
   List<dynamic> products = [];
+
+  onIndexChange(int index) {
+    currentSliderIndex = index;
+    notifyListeners();
+  }
 
   Future<bool> fetchProducts() async {
     try{
@@ -30,9 +36,7 @@ class ProductState extends ChangeNotifier {
     }catch(e) {
       print(e);
     }
-
     return true;
-
   }
 
 
