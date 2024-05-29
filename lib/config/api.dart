@@ -14,8 +14,8 @@ class API {
           {int limit = 10, int skip = 0, required String query}) =>
       '$baseUrl/products/search?q=$query&limit=$limit&skip=$skip';
 
-  static String productsByCategory({required String category}) =>
-      '$baseUrl/products/category/$category';
+  static String productsByCategory({required String category, int limit = 10, int skip = 0}) =>
+      '$baseUrl/products/category/$category?limit=$limit&skip=$skip';
 
   static String getAllCategories = '$baseUrl/products/categories';
 
@@ -24,4 +24,6 @@ class API {
   static String updateProduct({required String id}) => '$baseUrl/products/$id';
 
   static String deleteProduct({required String id}) => '$baseUrl/products/$id';
+
+  static String cartById({required String id}) => '$baseUrl/carts/$id';
 }

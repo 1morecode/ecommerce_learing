@@ -84,6 +84,7 @@ class ProductCard extends StatelessWidget {
                           direction: Axis.horizontal,
                           allowHalfRating: true,
                           itemCount: 5,
+                          ignoreGestures: true,
                           itemPadding: const EdgeInsets.symmetric(horizontal: 1.0),
                           itemBuilder: (context, _) => const Icon(
                             Icons.star,
