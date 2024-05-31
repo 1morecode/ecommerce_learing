@@ -50,20 +50,20 @@ class CartScreen extends StatelessWidget {
                       children: [
                         Row(
                           children: [
-                            Expanded(child: Text("Total Price")),
+                            const Expanded(child: Text("Total Price")),
                             Text("\$${productState.cartData['total'].floor()}")
                           ],
                         ),
                         Row(
                           children: [
-                            Expanded(child: Text("Discount")),
+                            const Expanded(child: Text("Discount")),
                             Text(
                                 "\$${(productState.cartData['total'] - productState.cartData['discountedTotal']).floor()}")
                           ],
                         ),
                         Row(
                           children: [
-                            Expanded(child: Text("Quantity")),
+                            const Expanded(child: Text("Quantity")),
                             Text("${productState.cartData['totalQuantity']}")
                           ],
                         ),

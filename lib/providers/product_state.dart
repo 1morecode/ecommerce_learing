@@ -9,7 +9,6 @@ import 'package:http/http.dart' as http;
 import 'package:state_mgt/config/api.dart';
 
 class ProductState extends ChangeNotifier {
-
   int currentSliderIndex = 0;
   List<dynamic> products = [];
   List<dynamic> categoriesProducts = [];
@@ -22,8 +21,9 @@ class ProductState extends ChangeNotifier {
   }
 
   Future<bool> fetchProducts() async {
-    try{
-      var request = http.Request('GET', Uri.parse(API.getAllProducts(skip: products.length, limit: 50)));
+    try {
+      var request = http.Request('GET',
+          Uri.parse(API.getAllProducts(skip: products.length, limit: 50)));
 
       http.StreamedResponse response = await request.send();
 
@@ -32,21 +32,23 @@ class ProductState extends ChangeNotifier {
         products.addAll(data['products']);
         notifyListeners();
         print(data['products']);
-      }
-      else {
+      } else {
         print(response.reasonPhrase);
       }
-    }catch(e) {
+    } catch (e) {
       print(e);
     }
     return true;
   }
 
   Future<bool> fetchProductsByCategory({required String category}) async {
-    try{
+    try {
       categoriesProducts.clear();
       notifyListeners();
-      var request = http.Request('GET', Uri.parse(API.productsByCategory(skip: categoriesProducts.length, limit: 50, category: category)));
+      var request = http.Request(
+          'GET',
+          Uri.parse(API.productsByCategory(
+              skip: categoriesProducts.length, limit: 50, category: category)));
 
       http.StreamedResponse response = await request.send();
 
@@ -55,18 +57,17 @@ class ProductState extends ChangeNotifier {
         categoriesProducts.addAll(data['products']);
         notifyListeners();
         print(data);
-      }
-      else {
+      } else {
         print(response.reasonPhrase);
       }
-    }catch(e) {
+    } catch (e) {
       print(e);
     }
     return true;
   }
 
   Future<bool> fetchCategory() async {
-    try{
+    try {
       var request = http.Request('GET', Uri.parse(API.getAllCategories));
 
       http.StreamedResponse response = await request.send();
@@ -74,35 +75,66 @@ class ProductState extends ChangeNotifier {
       if (response.statusCode == 200) {
         dynamic data = jsonDecode(await response.stream.bytesToString());
         categories = data;
-      }
-      else {
+      } else {
         print(response.reasonPhrase);
       }
-    }catch(e) {
+    } catch (e) {
       print(e);
     }
     return true;
   }
 
   Future<bool> fetchCart() async {
-    try{
-      var request = http.Request('GET', Uri.parse(API.cartById(id: "1")));
+    try {
+      if(cartData == null){
+        var request = http.Request('GET', Uri.parse(API.cartById(id: "1")));
 
-      http.StreamedResponse response = await request.send();
+        http.StreamedResponse response = await request.send();
 
-      if (response.statusCode == 200) {
-        dynamic data = jsonDecode(await response.stream.bytesToString());
-        cartData = data;
-        notifyListeners();
+        if (response.statusCode == 200) {
+          dynamic data = jsonDecode(await response.stream.bytesToString());
+          cartData = data;
+          notifyListeners();
+        } else {
+          print(response.reasonPhrase);
+        }
       }
-      else {
-        print(response.reasonPhrase);
-      }
-    }catch(e) {
+    } catch (e) {
       print(e);
     }
     return true;
   }
 
+  addNewProductToCart({required int pId, required int quantity}) async {
+    try {
+      var headers = {
+        'Content-Type': 'application/json'
+      };
+      var request = http.Request('PUT', Uri.parse(API.cartById(id: "1")));
+      request.body = json.encode({
+        "merge": true,
+        "products": [
+          {
+            "id": pId,
+            "quantity": quantity
+          }
+        ]
+      });
+      request.headers.addAll(headers);
 
+      http.StreamedResponse response = await request.send();
+
+      if (response.statusCode == 200) {
+        dynamic data = jsonDecode(await response.stream.bytesToString());
+        print(data);
+        cartData = data;
+        notifyListeners();
+      } else {
+        print(response.reasonPhrase);
+      }
+    } catch (e) {
+      print(e);
+    }
+    return true;
+  }
 }

@@ -25,7 +25,7 @@ class ProductCard extends StatelessWidget {
               builder: (context) => ProductDetail(
                 product: product,
               ),
-            ));
+            )).then((value) => null);
       },
       padding: EdgeInsets.zero,
       child: Card(

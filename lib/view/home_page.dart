@@ -55,6 +55,7 @@ class _HomePageState extends State<HomePage> {
         ),
         body: ListView(
           children: [
+            // Categories
             SizedBox(
               height: 60,
               child: Row(
@@ -88,6 +89,7 @@ class _HomePageState extends State<HomePage> {
                 ],
               ),
             ),
+            // All Products
             ...List.generate(
                 productState.products.length,
                 (index) => ProductCard(

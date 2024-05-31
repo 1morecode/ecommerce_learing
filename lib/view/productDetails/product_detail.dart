@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:provider/provider.dart';
 import 'package:state_mgt/providers/product_state.dart';
+import 'package:state_mgt/view/cart/cart_screen.dart';
 
 class ProductDetail extends StatelessWidget {
   final dynamic product;
@@ -50,29 +51,29 @@ class ProductDetail extends StatelessWidget {
                   scrollDirection: Axis.horizontal,
                 )),
             // Indicator
-            if(product['images'].length >= 2)
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: List.generate(
-                product['images'].length,
-                (index) => GestureDetector(
-                    onTap: () {
-                      value.onIndexChange(index);
-                      _controller.jumpToPage(index);
-                    },
-                    child: Container(
-                      width: 8.0,
-                      height: 8.0,
-                      margin: const EdgeInsets.symmetric(
-                          vertical: 8.0, horizontal: 4.0),
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        color: Colors.black.withOpacity(
-                            value.currentSliderIndex == index ? 0.6 : 0.2),
-                      ),
-                    )),
+            if (product['images'].length >= 2)
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: List.generate(
+                  product['images'].length,
+                  (index) => GestureDetector(
+                      onTap: () {
+                        value.onIndexChange(index);
+                        _controller.jumpToPage(index);
+                      },
+                      child: Container(
+                        width: 8.0,
+                        height: 8.0,
+                        margin: const EdgeInsets.symmetric(
+                            vertical: 8.0, horizontal: 4.0),
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: Colors.black.withOpacity(
+                              value.currentSliderIndex == index ? 0.6 : 0.2),
+                        ),
+                      )),
+                ),
               ),
-            ),
             Padding(
               padding: const EdgeInsets.all(16.0),
               child: Column(
@@ -218,14 +219,41 @@ class ProductDetail extends StatelessWidget {
               child: CupertinoButton(
                 padding: const EdgeInsets.all(0),
                 color: Colors.blue,
-                onPressed: () {},
+                onPressed: () {
+                  if (checkCartById(product['id'], context)) {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const CartScreen(),
+                        ));
+                  } else {
+                    value.addNewProductToCart(pId: product['id'], quantity: 3);
+                  }
+                },
                 borderRadius: BorderRadius.circular(0),
-                child: const Text("Add to Cart"),
+                child: Text(checkCartById(product['id'], context)
+                    ? "Go to Cart"
+                    : "Add to Cart"),
               ),
             ))
           ],
         ),
       ),
     );
+  }
+
+  checkCartById(int id, context) {
+    var provider = Provider.of<ProductState>(context, listen: false);
+    if (provider.cartData != null) {
+      List<dynamic> products = provider.cartData['products'];
+      List<dynamic> productCartList =
+          products.where((element) => element['id'] == id).toList();
+      if (productCartList.isNotEmpty) {
+        return true;
+      }
+      return false;
+    } else {
+      return false;
+    }
   }
 }
